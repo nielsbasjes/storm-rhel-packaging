@@ -17,7 +17,7 @@ all: rpm
 rpm:: storm-$(STORMVERSION)*.rpm
 
 storm-$(STORMVERSION)*.rpm: storm-$(STORMVERSION).tgz
-	@echo "Building the rpm and srpm"
+	@echo "Building the rpm"
 	-@mkdir -p RPM_BUILDING/BUILD  RPM_BUILDING/RPMS  RPM_BUILDING/SOURCES  RPM_BUILDING/SPECS  RPM_BUILDING/SRPMS
 	@rpmbuild --define="_topdir `pwd`/RPM_BUILDING" -tb storm-$(STORMVERSION).tgz
 	@find RPM_BUILDING/{,S}RPMS/ -type f | xargs -n1 -iXXX mv XXX .
@@ -34,7 +34,7 @@ storm-$(STORMVERSION).tgz: storm-$(STORMVERSION) storm-$(STORMVERSION)/storm.spe
 	@tar czf $@ $<
 
 storm-$(STORMVERSION)/storm.spec: storm-$(STORMVERSION)
-	@sed "s/\#\#STORMVERSION\#\#/$(STORMVERSION)/g" < rpm/storm.spec.in > storm-$(STORMVERSION)/storm.spec
+	@sed "s/\#\#VERSION\#\#/$(STORMVERSION)/g" < rpm/storm.spec.in > storm-$(STORMVERSION)/storm.spec
 
 storm-$(STORMVERSION): storm-$(STORMVERSION).zip
 	@echo "Unpacking the original distribution."
@@ -54,7 +54,7 @@ clean::
 rpm:: jzmq-$(JZMQVERSION)*.rpm
 
 jzmq-$(JZMQVERSION)*.rpm: jzmq-$(JZMQVERSION).tar.gz
-	@echo "Building the rpm and srpm"
+	@echo "Building the rpm"
 	-@mkdir -p RPM_BUILDING/BUILD  RPM_BUILDING/RPMS  RPM_BUILDING/SOURCES  RPM_BUILDING/SPECS  RPM_BUILDING/SRPMS
 	@rpmbuild --define="_topdir `pwd`/RPM_BUILDING" -tb jzmq-$(JZMQVERSION).tar.gz
 	@find RPM_BUILDING/{,S}RPMS/ -type f | xargs -n1 -iXXX mv XXX .
@@ -69,14 +69,13 @@ jzmq-$(JZMQVERSION).tar.gz: jzmq-$(JZMQVERSION)
 	@tar czf $@ $<
 
 jzmq-$(JZMQVERSION):
-	git clone https://github.com/zeromq/jzmq.git jzmq-$(JZMQVERSION)
-	cd jzmq-$(JZMQVERSION)
-	git checkout $(JZMQVERSIONTAG)
+	@git clone https://github.com/zeromq/jzmq.git jzmq-$(JZMQVERSION)
+	@( cd jzmq-$(JZMQVERSION) ; git checkout $(JZMQVERSIONTAG) )
 
 
 clean::
 	@echo -n "Cleaning jzmq "
-	@rm -rf jzmq-$(JZMQVERSION) jzmq-$(JZMQVERSION).tar.gz jzmq-$(JZMQVERSION)*rpm RPM_BUILDING
+	@rm -rf jzmq-$(JZMQVERSION) jzmq-$(JZMQVERSION).tar.gz jzmq-$(JZMQVERSION)*rpm jzmq-devel-$(JZMQVERSION)*rpm RPM_BUILDING
 	@echo "done."
 
 # =======================================================================
