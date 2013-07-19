@@ -48,12 +48,24 @@ Storm has a website at storm-project.net. Follow @stormprocessor on Twitter for 
 echo $(cd %{buildroot} && find . -type f | cut -c 2-) | tr ' ' '\n' > files.txt
 # Grab the symlinks too
 echo $(cd %{buildroot} && find . -type l | cut -c 2-) | tr ' ' '\n' >> files.txt
+# And the directories under /opt 
+echo $(cd %{buildroot} && find ./opt/storm-%{version} -type d | cut -c 2-) | tr ' ' '\n' >> files.txt
 
 %clean
 [ "%{buildroot}" != "/" ] && %{__rm} -rf %{buildroot}
 
 %files -f files.txt
 %defattr(-,root,root,-)
+%config /opt/storm-%{version}/conf/storm.yaml
+%dir /opt/storm-%{version}
+%dir /etc/storm/conf.d
+%dir /var/log/storm
+%dir /var/opt/storm
+
+%preun
+service storm-ui stop
+service storm-nimbus stop
+service storm-supervisor stop
 
 %changelog
 * Fri Jul 19 2013 Niels Basjes <nbasjes@bol.com>
