@@ -60,6 +60,7 @@ then run
 
 	yum install storm-0.8.1-1.el6.x86_64.rpm jzmq-2.2.0-1.el6.x86_64.rpm
 
+In order to run storm you also need to have zookeeper installed and running!
 
 Because you'll probably want to have storm running continously you can now do
 
