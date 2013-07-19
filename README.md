@@ -8,19 +8,23 @@ This includes monit scripts that go in /etc/monit.d/ if you so choose. This also
 
 ----------
 
-Building
-========
+Dependencies
+============
 NOTE: This have been tested on CentOS 6.4 64bit
 
 ZeroMQ
 ------
-First make sure this repository has been enabled for your rpm build system. This contains the zeromq and zeromq-devel rpms.
+You can get prebuild zeroMQ rpms for either the EPEL repository
+
+    http://nl.mirror.eurid.eu/epel/6/i386/repoview/epel-release.html
+
+or here
 
 	http://download.opensuse.org/repositories/home:/fengshuo:/zeromq/CentOS_CentOS-6/
 
-and install the zeromq development libraries on your build system.
-	
-	yum install zeromq-devel
+
+Building
+--------
 
 Java
 -----
@@ -39,6 +43,7 @@ Atleast the following packages must be installed (incomplete list):
 	make
 	gcc-c++
 	rpm-build
+	zeromq-devel
 
 Running the build process
 -------------------------
@@ -52,15 +57,12 @@ Both storm and jzmq are downloaded and the rpms are built.
 
 Install Instructions
 =====================
-First make sure this repository has been enabled for your system. This contains the zeromq rpm.
-
-	http://download.opensuse.org/repositories/home:/fengshuo:/zeromq/CentOS_CentOS-6/
-
-then run
+First make sure you have one of the ZeroMQ repos enabled.
 
 	yum install storm-0.8.1-1.el6.x86_64.rpm jzmq-2.2.0-1.el6.x86_64.rpm
 
 In order to run storm you also need to have zookeeper installed and running!
+Storm is installed in /opt/storm/ and you can now continue with the regular configuration of storm.
 
 Because you'll probably want to have storm running continously you can now do
 
