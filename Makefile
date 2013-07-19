@@ -4,7 +4,7 @@
 #BEWARE THAT THIS MAY NOT CONTAIN A '-' !!!
 
 #For storm we will simply download the precompiled distribution
-STORMVERSION=0.8.1
+STORMVERSION=0.8.2
 
 #For jzmq we will do a git clone and then build the defined git tag
 JZMQVERSION=2.2.0
