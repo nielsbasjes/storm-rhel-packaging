@@ -33,7 +33,7 @@ storm-$(STORMVERSION).tgz: storm-$(STORMVERSION) storm-$(STORMVERSION)/storm.spe
 	@cp -a rpm storm-$(STORMVERSION)
 	@tar czf $@ $<
 
-storm-$(STORMVERSION)/storm.spec: storm-$(STORMVERSION)
+storm-$(STORMVERSION)/storm.spec: storm-$(STORMVERSION) rpm/storm.spec.in
 	@sed "s/\#\#VERSION\#\#/$(STORMVERSION)/g" < rpm/storm.spec.in > storm-$(STORMVERSION)/storm.spec
 
 storm-$(STORMVERSION): storm-$(STORMVERSION).zip
