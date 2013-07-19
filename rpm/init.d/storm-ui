@@ -32,10 +32,10 @@ UI_JVM_OPTS=""
 
 start() {
     if storm_status $PID_FILE; then
-	echo "Error storm ui instance already running"
-	exit 1
+        echo "Error storm ui instance already running"
+        return 0
     else
-	echo "Starting storm ui..."
+        echo "Starting storm ui..."
     fi 
     STORM_CMD="java -$JVM_TYPE -Xmx$UI_JVM_MEMORY -Djava.library.path=\"$JAVA_LIBRARY_PATH\" -Dstorm.options=\"$STORM_OPTIONS\" -Dstorm.home=\"$STORM_HOME\" -Dlog4j.configuration=storm.log.properties -Dlogfile.name=ui.log $UI_JVM_OPTS -cp \"$CLASSPATH\" backtype.storm.ui.core &"
     daemon "$STORM_CMD > /dev/null && echo \$! > $PID_FILE"
@@ -48,8 +48,8 @@ stop() {
     if storm_status $PID_FILE; then
         echo "Stopping storm ui..."
     else
-        echo "Storm supervisor is not running."
-	    return 1
+        echo "Storm ui is not running."
+        return 0
     fi
     killproc -p $PID_FILE -TERM
     print_storm_status $PID_FILE
@@ -65,7 +65,7 @@ storm_status() {
     local pidfile="$1" # IN
     local pid=`cat "$pidfile" 2>/dev/null`
     if [ "$pid" = '' ]; then
-    # The file probably does not exist or is empty. 
+        # The file probably does not exist or is empty. 
         return 1
     fi
 
@@ -77,15 +77,15 @@ storm_status() {
 
 print_storm_status() {
     if storm_status $PID_FILE; then
-        echo "Storm ui is running."	
+        echo "Storm ui is running."        
     else
-	echo "Storm ui is stopped."
-     fi
+        echo "Storm ui is stopped."
+    fi
 }
 
 restart() {
-        stop
-        start
+    stop
+    start
 }
 
 reload()  {
@@ -93,22 +93,22 @@ reload()  {
 }
 
 case "$1" in
-  start)
+    start)
         start
         ;;
-  stop)
+    stop)
         stop
         ;;
-  status)
-  	print_storm_status		 
+    status)
+        print_storm_status                 
         ;;
-  restart)
+    restart)
         restart
         ;;
-  reload)
+    reload)
         reload
         ;;
-  *)
+    *)
         echo $"Usage: $0 {start|stop|status|restart}"
         exit 2
 esac

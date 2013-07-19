@@ -32,10 +32,10 @@ SUPERVISOR_JVM_OPTS=""
 
 start() {
     if storm_status $PID_FILE; then
-	echo "Error storm supervisor instance already running"
-	exit 1
+        echo "Error storm supervisor instance already running"
+        return 0
     else
-	echo "Starting storm supervisor..."
+        echo "Starting storm supervisor..."
     fi 
     STORM_CMD="java -$JVM_TYPE -Xmx$SUPERVISOR_JVM_MEMORY -Djava.library.path=\"$JAVA_LIBRARY_PATH\" -Dstorm.options=\"$STORM_OPTIONS\" -Dstorm.home=\"$STORM_HOME\" -Dlog4j.configuration=storm.log.properties -Dlogfile.name=supervisor.log $SUPERVISOR_JVM_OPTS -cp \"$CLASSPATH\" backtype.storm.daemon.supervisor &"
     daemon "$STORM_CMD > /dev/null && echo \$! > $PID_FILE"
@@ -49,7 +49,7 @@ stop() {
         echo "Stopping storm supervisor..."
     else
         echo "Storm supervisor is not running."
-	    return 1
+        return 0
     fi
     killproc -p $PID_FILE -TERM
     print_storm_status $PID_FILE
@@ -65,7 +65,7 @@ storm_status() {
     local pidfile="$1" # IN
     local pid=`cat "$pidfile" 2>/dev/null`
     if [ "$pid" = '' ]; then
-    # The file probably does not exist or is empty. 
+        # The file probably does not exist or is empty. 
         return 1
     fi
 
@@ -77,15 +77,15 @@ storm_status() {
 
 print_storm_status() {
     if storm_status $PID_FILE; then
-        echo "Storm supervisor is running."	
+        echo "Storm supervisor is running."
     else
-	echo "Storm supervisor is stopped."
-     fi
+        echo "Storm supervisor is stopped."
+    fi
 }
 
 restart() {
-        stop
-        start
+    stop
+    start
 }
 
 reload()  {
@@ -93,22 +93,22 @@ reload()  {
 }
 
 case "$1" in
-  start)
+    start)
         start
         ;;
-  stop)
+    stop)
         stop
         ;;
-  status)
-  	print_storm_status		 
+    status)
+        print_storm_status
         ;;
-  restart)
+    restart)
         restart
         ;;
-  reload)
+    reload)
         reload
         ;;
-  *)
+    *)
         echo $"Usage: $0 {start|stop|status|restart}"
         exit 2
 esac
