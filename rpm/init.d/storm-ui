@@ -2,6 +2,10 @@
 #
 ### BEGIN INIT INFO
 # Provides: $storm-ui
+# chkconfig: - 64 36
+# description:  Storm UI.
+# processname: storm-ui
+# pidfile: /var/run/storm-ui.pid
 ### END INIT INFO
 
 # Source function library.
@@ -45,7 +49,7 @@ stop() {
         echo "Stopping storm ui..."
     else
         echo "Storm supervisor is not running."
-	exit 1
+	    return 1
     fi
     killproc -p $PID_FILE -TERM
     print_storm_status $PID_FILE

@@ -2,6 +2,11 @@
 #
 ### BEGIN INIT INFO
 # Provides: $storm-nimbus
+# chkconfig: - 64 36
+# description:  Storm Nimbus service.
+# processname: storm-nimbus
+# pidfile: /var/run/storm-nimbus.pid
+
 ### END INIT INFO
 
 # Source function library.
@@ -45,7 +50,7 @@ stop() {
         echo "Stopping storm nimbus..."
     else
         echo "Storm supervisor is not running."
-	exit 1
+        return 1
     fi
     killproc -p $PID_FILE -TERM
     print_storm_status $PID_FILE
