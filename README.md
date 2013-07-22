@@ -10,17 +10,7 @@ This includes monit scripts that go in /etc/monit.d/ if you so choose. This also
 
 Dependencies
 ============
-NOTE: This have been tested on CentOS 6.4 64bit
-
-ZeroMQ
-------
-You can get prebuild zeroMQ rpms for either the EPEL repository
-
-    http://nl.mirror.eurid.eu/epel/6/i386/repoview/epel-release.html
-
-or here
-
-	http://download.opensuse.org/repositories/home:/fengshuo:/zeromq/CentOS_CentOS-6/
+NOTE: This has only been tested on CentOS 6.4 64bit!
 
 
 Building
@@ -35,43 +25,67 @@ Make sure that javah is available. It was found that this tool is installed as p
 Build tools
 -----------
 You need the common tools for building software.
-Atleast the following packages must be installed (incomplete list): 
+At least the following packages must be installed (incomplete list): 
 
-	git
-	autoconf
-	automake
-	make
-	gcc-c++
-	rpm-build
-	zeromq-devel
+    git
+    autoconf
+    automake
+    make
+    gcc-c++
+    rpm-build
+    libuuid-devel
+    glib2-devel
+    xmlto
+    asciidoc
 
 Running the build process
 -------------------------
-Simply type 
 
-	make
+Type
 
-Both storm and jzmq are downloaded and the rpms are built.
+    make
+
+Now for storm the binary distribution is downloaded and turned into rpms.
+For zeromq the sources are downloaded and built into rpms.
+
+For correctly building jzmq there is an explicit need for the correct zeromq dependencies.
+So the build process will stop and ask you to install the zeromq and zeromq-devel rpms that have just been built.
+After this has been done you can continue the process again by typing
+
+    make
+
+At the end of this you should have set of files something like this:
+
+    -rw-rw-r--. 1 nbasjes nbasjes    92007 Jul 22 12:50 jzmq-2.1.0-1.el6.x86_64.rpm
+    -rw-rw-r--. 1 nbasjes nbasjes     9470 Jul 22 12:50 jzmq-devel-2.1.0-1.el6.x86_64.rpm
+    -rw-rw-r--. 1 nbasjes nbasjes 14274360 Jul 22 12:49 storm-0.8.2-1.el6.x86_64.rpm
+    -rw-rw-r--. 1 nbasjes nbasjes  1236841 Jul 22 12:48 zeromq-2.1.7-1.el6.x86_64.rpm
+    -rw-rw-r--. 1 nbasjes nbasjes   439263 Jul 22 12:48 zeromq-devel-2.1.7-1.el6.x86_64.rpm
 
 ----------
 
 Install Instructions
 =====================
-First make sure you have one of the ZeroMQ repos enabled.
-
-	yum install storm-0.8.1-1.el6.x86_64.rpm jzmq-2.2.0-1.el6.x86_64.rpm
-
 In order to run storm you also need to have zookeeper installed and running!
+
+Simply install the 3 non-devel rpms on your nodes
+
+    yum install jzmq-2.1.0-1.el6.x86_64.rpm storm-0.8.2-1.el6.x86_64.rpm zeromq-2.1.7-1.el6.x86_64.rpm
+
 Storm is installed in /opt/storm/ and you can now continue with the regular configuration of storm.
+
+Note that I had to add this line to my config or it wouldn't find the native libjzmq files.
+
+    java.library.path: /usr/lib64/
 
 Because you'll probably want to have storm running continously you can now do
 
-	chkconfig storm-nimbus on
-	service storm-nimbus start
+    chkconfig storm-nimbus on
+    service storm-nimbus start
 
-	chkconfig storm-ui on
-	service storm-ui start
+    chkconfig storm-ui on
+    service storm-ui start
 
-	chkconfig storm-supervisor on
-	service storm-supervisor start
+    chkconfig storm-supervisor on
+    service storm-supervisor start
 
