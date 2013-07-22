@@ -37,10 +37,16 @@ storm-$(STORMVERSION).tgz: storm-$(STORMVERSION) storm-$(STORMVERSION)/storm.spe
 	@tar czf $@ $<
 
 storm-$(STORMVERSION)/storm.spec: storm-$(STORMVERSION) rpm/storm.spec.in
-	@sed "s/\#\#VERSION\#\#/$(STORMVERSION)/g" < rpm/storm.spec.in > storm-$(STORMVERSION)/storm.spec
+	@cat rpm/storm.spec.in | \
+	    sed "\
+	      s/\#\#VERSION\#\#/$(STORMVERSION)/g;\
+	      s/\#\#JZMQVERSION\#\#/$(JZMQVERSION)/g;\
+	      s/\#\#ZEROMQVERSION\#\#/$(ZEROMQVERSION)/g;\
+	    " > storm-$(STORMVERSION)/storm.spec
 
 storm-$(STORMVERSION): storm-$(STORMVERSION).zip
 	@echo "Unpacking the original distribution."
+	@touch storm-$(STORMVERSION).zip
 	@unzip -qq storm-$(STORMVERSION).zip
 
 storm-$(STORMVERSION).zip:
@@ -90,7 +96,7 @@ zeromq-devel-$(ZEROMQVERSION).installed:
 	    echo INSTALLED > $@ ; \
 	  else \
 	    echo "Now install zeromq-devel-$(ZEROMQVERSION) (this has just been built) and type \"make\" again (killing the build now)." ; \
-		exit 1; \
+	    exit 1; \
 	  fi \
 	)
 
@@ -115,15 +121,21 @@ jzmq-$(JZMQVERSION)*.rpm: jzmq-$(JZMQVERSION).tar.gz zeromq-devel-$(ZEROMQVERSIO
 	@echo "================================================="
 
 
-jzmq-$(JZMQVERSION).tar.gz: jzmq-$(JZMQVERSION)
+jzmq-$(JZMQVERSION).tar.gz: jzmq-$(JZMQVERSION) jzmq-$(JZMQVERSION)/jzmq.spec
 	@echo "Creating a $@ file."
 	@tar czf $@ $<
 
-jzmq-$(JZMQVERSION): zeromq-devel-$(ZEROMQVERSION).installed
+jzmq-$(JZMQVERSION)/jzmq.spec: jzmq-$(JZMQVERSION)
+	@echo "Get spec file fixes from the 2.2.0 version."
+	@curl https://raw.github.com/zeromq/jzmq/v2.2.0/jzmq.spec | \
+	      sed 's/2\.2\.0/$(JZMQVERSION)/g' | \
+	      sed 's/\(Requires:.*\)zeromq\(.*\)/\1zeromq = $(ZEROMQVERSION)\2/g'  \
+	      > jzmq-$(JZMQVERSION)/jzmq.spec
+
+jzmq-$(JZMQVERSION):
 	@echo "Get storm stable version of jzmq."
 	@git clone https://github.com/nathanmarz/jzmq.git jzmq-$(JZMQVERSION)
-	@echo "Get spec file fixes from the 2.2.0 version."
-	@curl https://raw.github.com/zeromq/jzmq/v2.2.0/jzmq.spec | sed 's/2\.2\.0/$(JZMQVERSION)/g' > jzmq-$(JZMQVERSION)/jzmq.spec
+	@rm -f jzmq-$(JZMQVERSION)/jzmq.spec
 
 clean::
 	@echo -n "Cleaning jzmq "
