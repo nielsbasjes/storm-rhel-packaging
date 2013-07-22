@@ -6,3 +6,6 @@ storm-*/
 storm-*.rpm
 storm-*.tgz
 storm-*.zip
+zeromq-*.rpm
+zeromq-*.installed
+zeromq/
