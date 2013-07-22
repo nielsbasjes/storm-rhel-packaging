@@ -13,11 +13,15 @@ ZEROMQVERSIONTAG=v2.1.7
 # Note that this must be the same version as is packaged inside the storm we downloaded
 JZMQVERSION=2.1.0
 
+RPMRELEASE=storm_$(STORMVERSION)
+
 all: rpm
 
 # =======================================================================
 #
-rpm:: storm-$(STORMVERSION)*.rpm
+.PHONY: storm-rpm
+rpm:: storm-rpm
+storm-rpm: storm-$(STORMVERSION)*.rpm
 
 storm-$(STORMVERSION)*.rpm: storm-$(STORMVERSION).tgz
 	@echo "Building the rpm"
@@ -40,8 +44,8 @@ storm-$(STORMVERSION)/storm.spec: storm-$(STORMVERSION) rpm/storm.spec.in
 	@cat rpm/storm.spec.in | \
 	    sed "\
 	      s/\#\#VERSION\#\#/$(STORMVERSION)/g;\
-	      s/\#\#JZMQVERSION\#\#/$(JZMQVERSION)/g;\
-	      s/\#\#ZEROMQVERSION\#\#/$(ZEROMQVERSION)/g;\
+	      s/\#\#JZMQVERSION\#\#/$(JZMQVERSION)-$(RPMRELEASE)%{?dist}/g;\
+	      s/\#\#ZEROMQVERSION\#\#/$(ZEROMQVERSION)-$(RPMRELEASE)%{?dist}/g;\
 	    " > storm-$(STORMVERSION)/storm.spec
 
 storm-$(STORMVERSION): storm-$(STORMVERSION).zip
@@ -60,7 +64,9 @@ clean::
 
 # =======================================================================
 
-rpm:: zeromq-$(ZEROMQVERSION)*.rpm
+.PHONY: zeromq-rpm
+rpm:: zeromq-rpm
+zeromq-rpm: zeromq-$(ZEROMQVERSION)*.rpm
 
 zeromq-$(ZEROMQVERSION)*.rpm: zeromq/zeromq-$(ZEROMQVERSION).tar.gz
 	@echo "Building the rpm"
@@ -79,13 +85,14 @@ zeromq/zeromq-$(ZEROMQVERSION).tar.gz: zeromq/builds/redhat/zeromq.spec.in
 	  cd zeromq; \
 	  ./autogen.sh ; \
 	  ./configure ; \
-	  make dist -j2 ;\
+	  make dist -j6 ;\
 	 )
 
 zeromq/builds/redhat/zeromq.spec.in:
 	@echo "Get storm stable version of zeromq."
 	@git clone https://github.com/zeromq/zeromq2-x zeromq
 	@( cd zeromq; git checkout $(ZEROMQVERSIONTAG) )
+	@sed -i 's/\(Release: *\)1\(.*\)/\1$(RPMRELEASE)\2/g' $@
 
 zeromq-devel-$(ZEROMQVERSION).installed:
 	@(\
@@ -106,8 +113,9 @@ clean::
 	@echo "done."
 
 # =======================================================================
-
-rpm:: jzmq-$(JZMQVERSION)*.rpm
+.PHONY: jzmq-rpm
+rpm:: jzmq-rpm
+jzmq-rpm: jzmq-$(JZMQVERSION)*.rpm
 
 jzmq-$(JZMQVERSION)*.rpm: jzmq-$(JZMQVERSION).tar.gz zeromq-devel-$(ZEROMQVERSION).installed
 	@echo "Building the rpm"
@@ -129,7 +137,8 @@ jzmq-$(JZMQVERSION)/jzmq.spec: jzmq-$(JZMQVERSION)
 	@echo "Get spec file fixes from the 2.2.0 version."
 	@curl https://raw.github.com/zeromq/jzmq/v2.2.0/jzmq.spec | \
 	      sed 's/2\.2\.0/$(JZMQVERSION)/g' | \
-	      sed 's/\(Requires:.*\)zeromq\(.*\)/\1zeromq = $(ZEROMQVERSION)\2/g'  \
+	      sed 's/\(Release: *\)1\(.*\)/\1$(RPMRELEASE)\2/g' | \
+	      sed 's/\(Requires:.*\)zeromq\(.*\)/\1zeromq = $(ZEROMQVERSION)-$(RPMRELEASE)%{?dist}\2/g'  \
 	      > jzmq-$(JZMQVERSION)/jzmq.spec
 
 jzmq-$(JZMQVERSION):
