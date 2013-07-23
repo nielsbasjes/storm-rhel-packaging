@@ -56,11 +56,13 @@ After this has been done you can continue the process again by typing
 
 At the end of this you should have set of files something like this:
 
-    -rw-rw-r--. 1 nbasjes nbasjes    92007 Jul 22 12:50 jzmq-2.1.0-1.el6.x86_64.rpm
-    -rw-rw-r--. 1 nbasjes nbasjes     9470 Jul 22 12:50 jzmq-devel-2.1.0-1.el6.x86_64.rpm
-    -rw-rw-r--. 1 nbasjes nbasjes 14274360 Jul 22 12:49 storm-0.8.2-1.el6.x86_64.rpm
-    -rw-rw-r--. 1 nbasjes nbasjes  1236841 Jul 22 12:48 zeromq-2.1.7-1.el6.x86_64.rpm
-    -rw-rw-r--. 1 nbasjes nbasjes   439263 Jul 22 12:48 zeromq-devel-2.1.7-1.el6.x86_64.rpm
+    -rw-rw-r--. 1 nbasjes nbasjes    92076 Jul 22 16:07 jzmq-2.1.0-storm_0.8.2.el6.x86_64.rpm
+    -rw-rw-r--. 1 nbasjes nbasjes     9523 Jul 22 16:07 jzmq-devel-2.1.0-storm_0.8.2.el6.x86_64.rpm
+    -rw-rw-r--. 1 nbasjes nbasjes 14274447 Jul 22 16:02 storm-0.8.2-1.el6.x86_64.rpm
+    -rw-rw-r--. 1 nbasjes nbasjes  1236887 Jul 22 15:57 zeromq-2.1.7-storm_0.8.2.el6.x86_64.rpm
+    -rw-rw-r--. 1 nbasjes nbasjes   439313 Jul 22 15:57 zeromq-devel-2.1.7-storm_0.8.2.el6.x86_64.rpm
+
+As you can see the rpms that are needed to run this storm have the "Release" value storm_0.8.2.el6 which is the combination of "storm_0.8.2" and the distribution "el6" (which is what you get on CentOS 6.4).
 
 ----------
 
@@ -70,7 +72,7 @@ In order to run storm you also need to have zookeeper installed and running!
 
 Simply install the 3 non-devel rpms on your nodes
 
-    yum install jzmq-2.1.0-1.el6.x86_64.rpm storm-0.8.2-1.el6.x86_64.rpm zeromq-2.1.7-1.el6.x86_64.rpm
+    yum install storm-0.8.2-1.el6.x86_64.rpm jzmq-2.1.0-storm_0.8.2.el6.x86_64.rpm zeromq-2.1.7-storm_0.8.2.el6.x86_64.rpm 
 
 Storm is installed in /opt/storm/ and you can now continue with the regular configuration of storm.
 
