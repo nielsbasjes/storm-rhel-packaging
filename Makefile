@@ -4,8 +4,8 @@
 #BEWARE THAT THIS MAY NOT CONTAIN A '-' !!!
 
 #For storm we will simply download the precompiled distribution
-STORMVERSION=0.8.2
-
+STORMVERSION=0.9.0.1
+STORMURL=https://dl.dropboxusercontent.com/s/dj86w8ojecgsam7/storm-0.9.0.1.zip
 ZEROMQVERSION=2.1.7
 ZEROMQVERSIONTAG=v2.1.7
 
@@ -36,7 +36,7 @@ storm-$(STORMVERSION)*.rpm: storm-$(STORMVERSION).tgz
 
 storm-$(STORMVERSION).tgz: storm-$(STORMVERSION) storm-$(STORMVERSION)/storm.spec 
 	@echo "Creating a modified $@ file."
-	@cp rpm/log4j/storm.log.properties storm-$(STORMVERSION)/log4j/storm.log.properties
+	#@cp rpm/log4j/storm.log.properties storm-$(STORMVERSION)/log4j/storm.log.properties
 	@cp -a rpm storm-$(STORMVERSION)
 	@tar czf $@ $<
 
@@ -55,7 +55,7 @@ storm-$(STORMVERSION): storm-$(STORMVERSION).zip
 
 storm-$(STORMVERSION).zip:
 	@echo "Downloading the original distribution."
-	@wget https://dl.dropbox.com/u/133901206/storm-$(STORMVERSION).zip
+	@wget $(STORMURL)
 
 clean::
 	@echo -n "Cleaning storm "
