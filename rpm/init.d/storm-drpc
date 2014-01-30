@@ -27,8 +27,8 @@ STORM_LOG="$STORM_HOME/logs"
 CLASSPATH="$STORM_JARS:$LIB/*:$STORM_CONF:$STORM_LOG"
 
 JVM_TYPE="server"
-SUPERVISOR_JVM_MEMORY="1024m"
-SUPERVISOR_JVM_OPTS=""
+DRPC_JVM_MEMORY="1024m"
+DRPC_JVM_OPTS=""
 
 # Source config
 . /etc/sysconfig/storm
@@ -40,7 +40,7 @@ start() {
     else
         echo "Starting storm drpc..."
     fi 
-    STORM_CMD="java -$JVM_TYPE -Xmx$SUPERVISOR_JVM_MEMORY -Djava.library.path=\"$JAVA_LIBRARY_PATH\" -Dstorm.options=\"$STORM_OPTIONS\" -Dstorm.home=\"$STORM_HOME\" -Dlogback.configurationFile=${STORM_HOME}/logback/cluster.xml -Dlogfile.name=drpc.log $SUPERVISOR_JVM_OPTS -cp \"$CLASSPATH\" backtype.storm.daemon.drpc &"
+    STORM_CMD="java -$JVM_TYPE -Xmx$DRPC_JVM_MEMORY -Djava.library.path=\"$JAVA_LIBRARY_PATH\" -Dstorm.options=\"$STORM_OPTIONS\" -Dstorm.home=\"$STORM_HOME\" -Dlogback.configurationFile=${STORM_HOME}/logback/cluster.xml -Dlogfile.name=drpc.log $DRPC_JVM_OPTS -cp \"$CLASSPATH\" backtype.storm.daemon.drpc &"
     daemon "$STORM_CMD > /dev/null && echo \$! > $PID_FILE"
     RETVAL=$?
     print_storm_status $PID_FILE

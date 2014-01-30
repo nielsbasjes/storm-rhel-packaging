@@ -66,8 +66,11 @@ echo $(cd %{buildroot} && find ./opt/storm-%{version} -type d | cut -c 2-) | tr 
 service storm-ui stop
 service storm-nimbus stop
 service storm-supervisor stop
+service storm-drpc stop
 
 %changelog
+* Thu Jan 30 2014 Niels Basjes <nbasjes@bol.com>
+- Added DRPC
 * Fri Jul 19 2013 Niels Basjes <nbasjes@bol.com>
 - Improved and updated packaging
 * Mon Jul 16 2012 Richard Fliam <zbobet2012@gmail.com>
