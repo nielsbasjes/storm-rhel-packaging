@@ -62,6 +62,7 @@ stop() {
 storm_check_pid() {
     local pid=$1
     ps -fp $pid | grep $pid | grep drpc > /dev/null 2>&1
+    return $?
 }
 
 storm_status() {
@@ -76,13 +77,16 @@ storm_status() {
     pid="$1"
 
     storm_check_pid $pid
+    return $?
 }
 
 print_storm_status() {
     if storm_status $PID_FILE; then
         echo "Storm drpc is running."
+        return 0
     else
         echo "Storm drpc is stopped."
+        return 3
     fi
 }
 
