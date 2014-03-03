@@ -5,10 +5,6 @@
 
 #For storm we will simply download the precompiled distribution
 STORMVERSION=0.9.2_zk345
-STORMDIRBASENAME=apache-storm-0.9.2-zk345
-STORMURL=http://apache.mirror.1000mbps.com/incubator/storm/$(STORMDIRBASENAME)/$(STORMDIRBASENAME).tar.gz
-
-RPMRELEASE=storm_$(STORMVERSION)
 
 all: rpm
 
@@ -34,7 +30,12 @@ storm-$(STORMVERSION).tgz: storm-$(STORMVERSION) storm-$(STORMVERSION)/storm.spe
 	@cp -a rpm storm-$(STORMVERSION)
 	@tar czf $@ $<
 
-storm-$(STORMVERSION)/storm.spec: storm-$(STORMVERSION) rpm/storm.spec.in RELEASE rpm/* rpm/*/* Makefile
+storm-$(STORMVERSION): storm-sources/storm-dist/binary/target/apache-storm-$(STORMVERSION).tar.gz
+	tar xzf storm-sources/storm-dist/binary/target/apache-storm-$(STORMVERSION).tar.gz
+	rm -rf storm-$(STORMVERSION)
+	mv apache-storm-$(STORMVERSION) storm-$(STORMVERSION)
+
+storm-$(STORMVERSION)/storm.spec: storm-$(STORMVERSION)/RELEASE rpm/storm.spec.in RELEASE rpm/* rpm/*/* Makefile
 	@read REL < RELEASE ; (( REL += 1)) ; echo $${REL} > RELEASE 
 	@cat rpm/storm.spec.in | \
 	    sed "\
@@ -46,18 +47,28 @@ storm-$(STORMVERSION)/storm.spec: storm-$(STORMVERSION) rpm/storm.spec.in RELEAS
 RELEASE:
 	@echo 0 > $@
 
-storm-$(STORMVERSION): $(STORMDIRBASENAME).tar.gz
-	@echo "Unpacking the original distribution."
-	@touch $<
-	@tar xzf $<
-	@mv $(STORMDIRBASENAME) storm-$(STORMVERSION)
+storm-sources/storm-dist/binary/target/apache-storm-$(STORMVERSION).tar.gz: storm-sources/.gitignore
+	( \
+	cd storm-sources ; \
+	mvn install -DskipTests=true ; \
+	cd storm-dist/binary/ ; \
+	mvn package -DskipTests=true -Pdist -Dgpg.skip=true ;\
+	) 
 
-$(STORMDIRBASENAME).tar.gz:
-	@echo "Downloading the original distribution."
-	@curl $(STORMURL) > $@
+storm-sources/.gitignore:
+	@echo "Downloading sources."
+	( \
+	git clone git://git.apache.org/incubator-storm.git storm-sources; \
+	cd storm-sources  ; \
+	git remote add STORM70 https://github.com/revans2/incubator-storm.git; \
+	git fetch STORM70 ; \
+	git merge STORM70/storm-70-zk-upgrade -m"Merge STORM-70"; \
+	find . -type f -name pom.xml | xargs -n1 -r -iXXX sed -i "s@<version>0.9.2-incubating-SNAPSHOT</version>@<version>$(STORMVERSION)</version>@g" XXX; \
+	)
+	touch $@
 
 clean::
 	@echo -n "Cleaning storm "
-	@rm -rf $(STORMDIRBASENAME) storm-$(STORMVERSION).tgz storm-$(STORMVERSION) storm-$(STORMVERSION)*rpm RPM_BUILDING
+	@rm -rf storm-sources storm-$(STORMVERSION).tgz storm-$(STORMVERSION) storm-$(STORMVERSION)*rpm RPM_BUILDING
 	@echo "done."
 
