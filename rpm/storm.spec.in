@@ -1,13 +1,13 @@
 Name: storm	
 Version: ##VERSION##
-Release: 1%{?dist}
+Release: ##RELEASE##%{?dist}
 Summary: Storm Complex Event Processing	
 Group: Applications/Internet
 License: EPLv1
 URL: http://storm-project.net
-Source: https://github.com/downloads/nathanmarz/storm/storm-%{version}.tgz
+Source: ##SOURCE##
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-Requires: jdk, jzmq = ##JZMQVERSION##, zeromq = ##ZEROMQVERSION##
+Requires: jdk
 %description
 Storm is a distributed realtime computation system. Similar to how Hadoop provides a set of general primitives for doing batch processing, Storm provides a set of general primitives for doing realtime computation. Storm is simple, can be used with any programming language, is used by many companies, and is a lot of fun to use!
 
@@ -69,6 +69,8 @@ service storm-supervisor stop
 service storm-drpc stop
 
 %changelog
+* Thu Feb 27 2014 Niels Basjes <nbasjes@bol.com>
+- Updated to 0.9.1 and removed ZeroMQ dependencies
 * Thu Jan 30 2014 Niels Basjes <nbasjes@bol.com>
 - Added DRPC
 * Fri Jul 19 2013 Niels Basjes <nbasjes@bol.com>

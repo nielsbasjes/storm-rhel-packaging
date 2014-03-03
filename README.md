@@ -10,8 +10,7 @@ This includes monit scripts that go in /etc/monit.d/ if you so choose. This also
 
 Dependencies
 ============
-NOTE: This has only been tested on CentOS 6.4 64bit!
-
+NOTE: This has only been tested on CentOS 6.5 64bit!
 
 Building
 --------
@@ -46,23 +45,11 @@ Type
     make
 
 Now for storm the binary distribution is downloaded and turned into rpms.
-For zeromq the sources are downloaded and built into rpms.
-
-For correctly building jzmq there is an explicit need for the correct zeromq dependencies.
-So the build process will stop and ask you to install the zeromq and zeromq-devel rpms that have just been built.
-After this has been done you can continue the process again by typing
-
-    make
-
 At the end of this you should have set of files something like this:
 
-    -rw-rw-r--. 1 nbasjes nbasjes    92076 Jul 22 16:07 jzmq-2.1.0-storm_0.8.2.el6.x86_64.rpm
-    -rw-rw-r--. 1 nbasjes nbasjes     9523 Jul 22 16:07 jzmq-devel-2.1.0-storm_0.8.2.el6.x86_64.rpm
-    -rw-rw-r--. 1 nbasjes nbasjes 14274447 Jul 22 16:02 storm-0.8.2-1.el6.x86_64.rpm
-    -rw-rw-r--. 1 nbasjes nbasjes  1236887 Jul 22 15:57 zeromq-2.1.7-storm_0.8.2.el6.x86_64.rpm
-    -rw-rw-r--. 1 nbasjes nbasjes   439313 Jul 22 15:57 zeromq-devel-2.1.7-storm_0.8.2.el6.x86_64.rpm
+    -rw-rw-r--. 1 nbasjes nbasjes 15532798 Feb 27 11:27 storm-0.9.1-2.el6.x86_64.rpm
 
-As you can see the rpms that are needed to run this storm have the "Release" value storm_0.8.2.el6 which is the combination of "storm_0.8.2" and the distribution "el6" (which is what you get on CentOS 6.4).
+Note that each time you run the 'make' command after changing something the release number will automatically be incremented.
 
 ----------
 
@@ -70,15 +57,11 @@ Install Instructions
 =====================
 In order to run storm you also need to have zookeeper installed and running!
 
-Simply install the 3 non-devel rpms on your nodes
+Simply install the rpm on your nodes
 
-    yum install storm-0.8.2-1.el6.x86_64.rpm jzmq-2.1.0-storm_0.8.2.el6.x86_64.rpm zeromq-2.1.7-storm_0.8.2.el6.x86_64.rpm 
+    yum install storm-0.9.1-2.el6.x86_64.rpm
 
 Storm is installed in /opt/storm/ and you can now continue with the regular configuration of storm.
-
-Note that I had to add this line to my config or it wouldn't find the native libjzmq files.
-
-    java.library.path: /usr/lib64/
 
 Because you'll probably want to have storm running continously you can now do
 
