@@ -32,7 +32,7 @@ UI_JVM_OPTS=""
 
 start() {
     if storm_status $PID_FILE; then
-        echo "Error storm ui instance already running"
+        echo "Storm ui instance already running"
         return 0
     else
         echo "Starting storm ui..."
@@ -49,7 +49,7 @@ stop() {
         echo "Stopping storm ui..."
     else
         echo "Storm ui is not running."
-        return 0
+        return 3
     fi
     killproc -p $PID_FILE -TERM
     print_storm_status $PID_FILE

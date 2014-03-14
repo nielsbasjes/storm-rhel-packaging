@@ -33,7 +33,7 @@ NIMBUS_JVM_OPTS=""
 
 start() {
     if storm_status $PID_FILE; then
-        echo "Error storm nimbus instance already running"
+        echo "Storm nimbus instance already running"
         return 0
     else
         echo "Starting storm nimbus..."
@@ -50,7 +50,7 @@ stop() {
         echo "Stopping storm nimbus..."
     else
         echo "Storm nimbus is not running."
-        return 0
+        return 3
     fi
     killproc -p $PID_FILE -TERM
     print_storm_status $PID_FILE

@@ -32,7 +32,7 @@ SUPERVISOR_JVM_OPTS=""
 
 start() {
     if storm_status $PID_FILE; then
-        echo "Error storm supervisor instance already running"
+        echo "Storm supervisor instance already running"
         return 0
     else
         echo "Starting storm supervisor..."
@@ -49,7 +49,7 @@ stop() {
         echo "Stopping storm supervisor..."
     else
         echo "Storm supervisor is not running."
-        return 0
+        return 3
     fi
     killproc -p $PID_FILE -TERM
     print_storm_status $PID_FILE

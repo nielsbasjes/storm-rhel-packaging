@@ -35,7 +35,7 @@ DRPC_JVM_OPTS=""
 
 start() {
     if storm_status $PID_FILE; then
-        echo "Error storm drpc instance already running"
+        echo "Storm drpc instance already running"
         return 0
     else
         echo "Starting storm drpc..."
@@ -52,7 +52,7 @@ stop() {
         echo "Stopping storm drpc..."
     else
         echo "Storm drpc is not running."
-        return 0
+        return 3
     fi
     killproc -p $PID_FILE -TERM
     print_storm_status $PID_FILE
