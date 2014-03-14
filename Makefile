@@ -2,9 +2,9 @@
 
 #Put the version of storm you need in the next line
 #BEWARE THAT THIS MAY NOT CONTAIN A '-' !!!
+STORMVERSION=0.9.2_SNAPSHOT
 
-#For storm we will simply download the precompiled distribution
-STORMVERSION=0.9.2_zk345
+STORMSOURCEVERSION=0.9.2-incubating-SNAPSHOT
 
 all: rpm
 
@@ -30,10 +30,10 @@ storm-$(STORMVERSION).tgz: storm-$(STORMVERSION) storm-$(STORMVERSION)/storm.spe
 	@cp -a rpm storm-$(STORMVERSION)
 	@tar czf $@ $<
 
-storm-$(STORMVERSION): storm-sources/storm-dist/binary/target/apache-storm-$(STORMVERSION).tar.gz
-	tar xzf storm-sources/storm-dist/binary/target/apache-storm-$(STORMVERSION).tar.gz
-	rm -rf storm-$(STORMVERSION)
-	mv apache-storm-$(STORMVERSION) storm-$(STORMVERSION)
+storm-$(STORMVERSION): storm-sources/storm-dist/binary/target/apache-storm-$(STORMSOURCEVERSION).tar.gz
+	tar xzf $<
+	rm -rf $@
+	mv apache-storm-$(STORMSOURCEVERSION) $@
 
 storm-$(STORMVERSION)/storm.spec: storm-$(STORMVERSION)/RELEASE rpm/storm.spec.in RELEASE rpm/* rpm/*/* Makefile
 	@read REL < RELEASE ; (( REL += 1)) ; echo $${REL} > RELEASE 
@@ -47,7 +47,7 @@ storm-$(STORMVERSION)/storm.spec: storm-$(STORMVERSION)/RELEASE rpm/storm.spec.i
 RELEASE:
 	@echo 0 > $@
 
-storm-sources/storm-dist/binary/target/apache-storm-$(STORMVERSION).tar.gz: storm-sources/.gitignore
+storm-sources/storm-dist/binary/target/apache-storm-$(STORMSOURCEVERSION).tar.gz: storm-sources/.gitignore
 	( \
 	cd storm-sources ; \
 	sed -i 's@.{storm.home}/logs/@/var/log/storm/@g' logback/cluster.xml ; \
@@ -59,14 +59,7 @@ storm-sources/storm-dist/binary/target/apache-storm-$(STORMVERSION).tar.gz: stor
 
 storm-sources/.gitignore:
 	@echo "Downloading sources."
-	( \
-	git clone git://git.apache.org/incubator-storm.git storm-sources; \
-	cd storm-sources  ; \
-	git remote add STORM70 https://github.com/revans2/incubator-storm.git; \
-	git fetch STORM70 ; \
-	git merge STORM70/storm-70-zk-upgrade -m"Merge STORM-70"; \
-	find . -type f -name pom.xml | xargs -n1 -r -iXXX sed -i "s@<version>0.9.2-incubating-SNAPSHOT</version>@<version>$(STORMVERSION)</version>@g" XXX; \
-	)
+	git clone git://git.apache.org/incubator-storm.git storm-sources
 	touch $@
 
 clean::
