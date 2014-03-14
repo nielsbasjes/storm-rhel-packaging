@@ -50,6 +50,8 @@ RELEASE:
 storm-sources/storm-dist/binary/target/apache-storm-$(STORMVERSION).tar.gz: storm-sources/.gitignore
 	( \
 	cd storm-sources ; \
+	sed -i 's@.{storm.home}/logs/@/var/log/storm/@g' logback/cluster.xml ; \
+	sed -i 's@storm.local.dir: "storm-local"@storm.local.dir: "/var/opt/storm"@g' conf/defaults.yaml ; \
 	mvn install -DskipTests=true ; \
 	cd storm-dist/binary/ ; \
 	mvn package -DskipTests=true -Pdist -Dgpg.skip=true ;\
