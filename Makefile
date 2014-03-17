@@ -2,9 +2,11 @@
 
 #Put the version of storm you need in the next line
 #BEWARE THAT THIS MAY NOT CONTAIN A '-' !!!
-STORMVERSION=0.9.2_SNAPSHOT
 
+#TODO: Extract this from the pom.xml in the sources
 STORMSOURCEVERSION=0.9.2-incubating-SNAPSHOT
+
+STORMVERSION=$(shell echo $(STORMSOURCEVERSION) | sed 's/-/_/g')
 
 all: rpm
 
