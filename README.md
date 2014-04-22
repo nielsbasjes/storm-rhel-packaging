@@ -1,4 +1,4 @@
-storm-rhel-packaging
+Storm RPM packaging
 ====================
 
 Packaging for redhat and fedora style RPM installations, including init.d scripts, default configurations, and a .spec file for building an RPM.
