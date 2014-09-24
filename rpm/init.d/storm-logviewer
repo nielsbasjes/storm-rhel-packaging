@@ -40,7 +40,7 @@ start() {
     else
         echo "Starting storm logviewer..."
     fi 
-    STORM_CMD="java -$JVM_TYPE -Xmx$DRPC_JVM_MEMORY -Djava.library.path=\"$JAVA_LIBRARY_PATH\" -Dstorm.options=\"$STORM_OPTIONS\" -Dstorm.home=\"$STORM_HOME\" -Dlogback.configurationFile=${STORM_HOME}/logback/cluster.xml -Dlogfile.name=logviewer.log $DRPC_JVM_OPTS -cp \"$CLASSPATH\" backtype.storm.daemon.logviewer &"
+    STORM_CMD="java -$JVM_TYPE -Xmx$DRPC_JVM_MEMORY -Djava.library.path=\"$JAVA_LIBRARY_PATH\" -Dstorm.options=\"$STORM_OPTIONS\" -Dstorm.home=\"$STORM_HOME\" -Dstorm.log.dir=/var/log/storm -Dlogback.configurationFile=${STORM_HOME}/logback/cluster.xml -Dlogfile.name=logviewer.log $DRPC_JVM_OPTS -cp \"$CLASSPATH\" backtype.storm.daemon.logviewer &"
     daemon "$STORM_CMD > /dev/null && echo \$! > $PID_FILE"
     RETVAL=$?
     print_storm_status $PID_FILE

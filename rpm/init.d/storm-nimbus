@@ -38,7 +38,7 @@ start() {
     else
         echo "Starting storm nimbus..."
     fi 
-    STORM_CMD="java -$JVM_TYPE -Xmx$NIMBUS_JVM_MEMORY -Djava.library.path=\"$JAVA_LIBRARY_PATH\" -Dstorm.options=\"$STORM_OPTIONS\" -Dstorm.home=\"$STORM_HOME\" -Dlogback.configurationFile=${STORM_HOME}/logback/cluster.xml -Dlogfile.name=nimbus.log $NIMBUS_JVM_OPTS -cp \"$CLASSPATH\" backtype.storm.daemon.nimbus &"
+    STORM_CMD="java -$JVM_TYPE -Xmx$NIMBUS_JVM_MEMORY -Djava.library.path=\"$JAVA_LIBRARY_PATH\" -Dstorm.options=\"$STORM_OPTIONS\" -Dstorm.home=\"$STORM_HOME\" -Dstorm.log.dir=/var/log/storm -Dlogback.configurationFile=${STORM_HOME}/logback/cluster.xml -Dlogfile.name=nimbus.log $NIMBUS_JVM_OPTS -cp \"$CLASSPATH\" backtype.storm.daemon.nimbus &"
     daemon "$STORM_CMD > /dev/null && echo \$! > $PID_FILE"
     RETVAL=$?
     print_storm_status $PID_FILE
