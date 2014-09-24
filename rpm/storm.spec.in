@@ -19,7 +19,7 @@ Storm has a website at storm-project.net. Follow @stormprocessor on Twitter for 
 %setup -q
 
 # For now there is no build process, may configure this later so that RPM actually builds. 
-# However, as storm build requires leinigen, and leinigen in turne requires
+# However, as storm build requires leinigen, and leinigen in turn requires
 # a ton of shit (namely the open JDK, which I don't want to pull) we will leave this out.
 %build
 
@@ -29,6 +29,7 @@ Storm has a website at storm-project.net. Follow @stormprocessor on Twitter for 
 
 # Copy the storm file to the right places
 %{__mkdir_p} %{buildroot}/opt/storm-%{version}
+%{__mkdir_p} %{buildroot}/opt/storm-%{version}/monit.d
 %{__mkdir_p} %{buildroot}/etc/sysconfig
 %{__mkdir_p} %{buildroot}/etc/storm/conf.d
 %{__mkdir_p} %{buildroot}/etc/init.d
@@ -39,6 +40,7 @@ Storm has a website at storm-project.net. Follow @stormprocessor on Twitter for 
 %{__ln_s} /opt/storm-%{version} %{buildroot}/opt/storm
 %{__cp} rpm/sysconfig/storm %{buildroot}/etc/sysconfig/storm
 %{__cp} rpm/init.d/* %{buildroot}/etc/init.d
+%{__cp} rpm/monit/* %{buildroot}/opt/storm-%{version}/monit.d
 %{__cp} rpm/profile.d/storm.sh %{buildroot}/etc/profile.d
 
 %{__rm} -rf %{buildroot}/opt/storm-%{version}/rpm/
