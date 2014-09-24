@@ -4,9 +4,12 @@
 #BEWARE THAT THIS MAY NOT CONTAIN A '-' !!!
 
 #TODO: Extract this from the pom.xml in the sources
-STORMSOURCEVERSION=0.9.2-incubating-SNAPSHOT
+STORMSOURCEVERSION=0.9.3-incubating-SNAPSHOT
 
 STORMVERSION=$(shell echo $(STORMSOURCEVERSION) | sed 's/-/_/g')
+
+## Too slow: GITREPO=git://git.apache.org/storm.git
+GITREPO=git://github.com/apache/storm.git
 
 all: rpm
 
@@ -61,7 +64,7 @@ storm-sources/storm-dist/binary/target/apache-storm-$(STORMSOURCEVERSION).tar.gz
 
 storm-sources/.gitignore:
 	@echo "Downloading sources."
-	git clone git://git.apache.org/incubator-storm.git storm-sources
+	git clone $(GITREPO) storm-sources
 	touch $@
 
 clean::
