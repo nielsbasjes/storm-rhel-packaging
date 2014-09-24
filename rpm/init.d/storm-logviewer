@@ -1,0 +1,123 @@
+#!/bin/bash
+#
+### BEGIN INIT INFO
+# Provides: $storm-logviewer
+# chkconfig: - 64 36
+# description:  Storm DRPC service.
+# processname: storm-logviewer
+# pidfile: /var/run/storm-logviewer.pid
+### END INIT INFO
+
+# Source function library.
+. /etc/init.d/functions
+RETVAL=0
+
+STORM_USER=root
+PID_FILE="/var/run/storm-logviewer.pid"
+
+STORM_HOME="/opt/storm"
+LIB="$STORM_HOME/lib"
+STORM_JARS1=($STORM_HOME/storm-console-logging*.jar)
+STORM_JARS2=($STORM_HOME/storm-netty*.jar)
+STORM_JARS3=($STORM_HOME/storm-core*.jar)
+STORM_JARS=${STORM_JARS1}:${STORM_JARS2}:${STORM_JARS3}
+STORM_CONF="$STORM_HOME/conf"
+STORM_LOG="$STORM_HOME/logs"
+
+CLASSPATH="$STORM_JARS:$LIB/*:$STORM_CONF:$STORM_LOG"
+
+JVM_TYPE="server"
+DRPC_JVM_MEMORY="1024m"
+DRPC_JVM_OPTS=""
+
+# Source config
+. /etc/sysconfig/storm
+
+start() {
+    if storm_status $PID_FILE; then
+        echo "Storm logviewer instance already running"
+        return 0
+    else
+        echo "Starting storm logviewer..."
+    fi 
+    STORM_CMD="java -$JVM_TYPE -Xmx$DRPC_JVM_MEMORY -Djava.library.path=\"$JAVA_LIBRARY_PATH\" -Dstorm.options=\"$STORM_OPTIONS\" -Dstorm.home=\"$STORM_HOME\" -Dlogback.configurationFile=${STORM_HOME}/logback/cluster.xml -Dlogfile.name=logviewer.log $DRPC_JVM_OPTS -cp \"$CLASSPATH\" backtype.storm.daemon.logviewer &"
+    daemon "$STORM_CMD > /dev/null && echo \$! > $PID_FILE"
+    RETVAL=$?
+    print_storm_status $PID_FILE
+    return $RETVAL
+}
+
+stop() {
+    if storm_status $PID_FILE; then
+        echo "Stopping storm logviewer..."
+    else
+        echo "Storm logviewer is not running."
+        return 3
+    fi
+    killproc -p $PID_FILE -TERM
+    print_storm_status $PID_FILE
+    return $?
+}
+
+storm_check_pid() {
+    local pid=$1
+    ps -fp $pid | grep $pid | grep logviewer > /dev/null 2>&1
+    return $?
+}
+
+storm_status() {
+    local pidfile="$1" # IN
+    local pid=`cat "$pidfile" 2>/dev/null`
+    if [ "$pid" = '' ]; then
+        # The file probably does not exist or is empty. 
+        return 1
+    fi
+
+    set -- $pid
+    pid="$1"
+
+    storm_check_pid $pid
+    return $?
+}
+
+print_storm_status() {
+    if storm_status $PID_FILE; then
+        echo "Storm logviewer is running."
+        return 0
+    else
+        echo "Storm logviewer is stopped."
+        return 3
+    fi
+}
+
+restart() {
+    stop
+    start
+}
+
+reload()  {
+    restart
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        print_storm_status
+        ;;
+    restart)
+        restart
+        ;;
+    reload)
+        reload
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|status|restart}"
+        exit 2
+esac
+
+exit $?

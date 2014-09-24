@@ -38,7 +38,7 @@ Storm has a website at storm-project.net. Follow @stormprocessor on Twitter for 
 %{__cp} -R * %{buildroot}/opt/storm-%{version}/
 %{__ln_s} /opt/storm-%{version} %{buildroot}/opt/storm
 %{__cp} rpm/sysconfig/storm %{buildroot}/etc/sysconfig/storm
-%{__cp} rpm/init.d/storm-nimbus rpm/init.d/storm-supervisor rpm/init.d/storm-ui rpm/init.d/storm-drpc %{buildroot}/etc/init.d
+%{__cp} rpm/init.d/* %{buildroot}/etc/init.d
 %{__cp} rpm/profile.d/storm.sh %{buildroot}/etc/profile.d
 
 %{__rm} -rf %{buildroot}/opt/storm-%{version}/rpm/
@@ -67,8 +67,12 @@ service storm-ui stop
 service storm-nimbus stop
 service storm-supervisor stop
 service storm-drpc stop
+service storm-logviewer stop
+exit 0
 
 %changelog
+* Wed Sep 24 2014 Niels Basjes <nbasjes@bol.com>
+- Added logviewer
 * Thu Feb 27 2014 Niels Basjes <nbasjes@bol.com>
 - Updated to 0.9.1 and removed ZeroMQ dependencies
 * Thu Jan 30 2014 Niels Basjes <nbasjes@bol.com>

@@ -27,7 +27,7 @@ storm-$(STORMVERSION)*.rpm: storm-$(STORMVERSION).tgz
 	@echo
 	@echo "================================================="
 	@echo "The rpms have been created and can be found here:"
-	@ls -laF storm*rpm
+	@ls -laF $@
 	@echo "================================================="
 
 storm-$(STORMVERSION).tgz: storm-$(STORMVERSION) storm-$(STORMVERSION)/storm.spec 
