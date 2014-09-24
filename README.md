@@ -74,3 +74,8 @@ Because you'll probably want to have storm running continously you can now do
     chkconfig storm-supervisor on
     service storm-supervisor start
 
+    chkconfig storm-drpc on
+    service storm-drpc start
+
+    chkconfig storm-logviewer on
+    service storm-logviewer start
