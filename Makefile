@@ -4,7 +4,7 @@
 #BEWARE THAT THIS MAY NOT CONTAIN A '-' !!!
 
 #TODO: Extract this from the pom.xml in the sources
-STORMSOURCEVERSION=0.9.3-incubating-SNAPSHOT
+STORMSOURCEVERSION=0.9.3-SNAPSHOT
 
 STORMVERSION=$(shell echo $(STORMSOURCEVERSION) | sed 's/-/_/g')
 

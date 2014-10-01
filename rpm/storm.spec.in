@@ -7,7 +7,7 @@ License: Apache (v2)
 URL: http://storm-project.net
 Source: ##SOURCE##
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-Requires: jdk >= 1.6
+Requires: java >= 1.7
 %description
 Storm is a distributed realtime computation system. Similar to how Hadoop provides a set of general primitives for doing batch processing, Storm provides a set of general primitives for doing realtime computation. Storm is simple, can be used with any programming language, is used by many companies, and is a lot of fun to use!
 
